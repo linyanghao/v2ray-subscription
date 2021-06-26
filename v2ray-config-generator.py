@@ -35,12 +35,6 @@ config_template = {
         "tag": "http"
     }
   ],
-  "log": {
-      "loglevel": "warning",
-      "access": "/etc/v2ray/v2ray_access.log",
-      "error": "/etc/v2ray/v2ray_error.log",
-
-  },
   "outbounds": [{
           "mux": {
               "enabled": True
@@ -111,6 +105,10 @@ def parse_link(link):
         }
         name = parse.unquote(string[1])
 
+    else:
+        print(f'Unsupported protocol: {protocol}')
+        return None
+
     config_info["prot"] = protocol
     config_info['name'] = name
 
@@ -128,7 +126,8 @@ def read_subs(url):
 
     for link in links:
         config_info = parse_link(link)
-        config_infos.append(config_info)
+        if config_info is not None:
+            config_infos.append(config_info)
     return config_infos
 
 def conf2json(config_info, transparent=False, rule_type='geoip'):
